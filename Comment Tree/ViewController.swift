@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UIViewController, UITextViewDelegate {
     
-    var worldView = UIView() //parent view
+//    var worldView = UIView() //parent view
     let worldSize: CGFloat = 20 //number of comments allowed across world
     var worldPosition = CGPoint() //for panning
     var worldScale: CGFloat = 1 // for zooming
@@ -28,14 +28,14 @@ class ViewController: UIViewController, UITextViewDelegate {
         
 //        view.frame.origin.x += 100
         //the parent view the holds everything, it can pan and zoom
-        worldView = UIView(frame: CGRect(x: 0, y: 0, width: worldSize*commentSpacing, height: worldSize*commentSpacing))
-        worldView.backgroundColor = UIColor.clear
-        worldView.layer.borderColor = UIColor(white: 0.4, alpha: 1).cgColor
-        worldView.layer.borderWidth = 4
-        view.addSubview(worldView)
+//        worldView = UIView(frame: CGRect(x: 0, y: 0, width: worldSize*commentSpacing, height: worldSize*commentSpacing))
+//        worldView.backgroundColor = UIColor.clear
+//        worldView.layer.borderColor = UIColor(white: 0.4, alpha: 1).cgColor
+//        worldView.layer.borderWidth = 4
+//        view.addSubview(worldView)
         
-        worldView.center = view.center
-        worldPosition = worldView.frame.origin
+//        worldView.center = view.center
+//        worldPosition = worldView.frame.origin
         
         //root of tree
 //        createComment(x: 0, y: 0, direction: "none")
@@ -58,7 +58,7 @@ class ViewController: UIViewController, UITextViewDelegate {
         commentArray = comments
         
         //position comment using their x and y relative to vew.center
-        let worldCenter = CGPoint(x: worldView.frame.width/2, y: worldView.frame.height/2)
+//        let worldCenter = CGPoint(x: worldView.frame.width/2, y: worldView.frame.height/2)
 //        let spacing = commentSpacing*worldScale
         
         for comment in comments {
@@ -66,9 +66,9 @@ class ViewController: UIViewController, UITextViewDelegate {
             //put comment it its place using its x and y
             let commentView = CommentView(username: comment.username, text: comment.text, x: comment.x, y: comment.y, editMode: false)
             commentViewArray.append(commentView)
-            commentView.center.x = worldCenter.x + commentSpacing*CGFloat(comment.x)
-            commentView.center.y = worldCenter.y - commentSpacing*CGFloat(comment.y)
-            worldView.addSubview(commentView)
+            commentView.center.x = view.center.x + commentSpacing*CGFloat(comment.x)
+            commentView.center.y = view.center.y - commentSpacing*CGFloat(comment.y)
+            view.addSubview(commentView)
             
             //draw line from center of comment to center to its respond comment
             let linePath = UIBezierPath()
@@ -82,7 +82,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             shapeLayer.strokeColor = UIColor(white: 0.7, alpha: 1.0).cgColor
             shapeLayer.lineWidth = 10.0
             shapeLayer.zPosition = -1
-            worldView.layer.addSublayer(shapeLayer)
+            view.layer.addSublayer(shapeLayer)
             
             //make tapViews (bubbles)
         }
@@ -114,7 +114,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
             if canMakeViewTop {
                 let tapViewTop = TapView(createX: commentView.x, createY: commentView.y+1, direction: "U")
-                worldView.addSubview(tapViewTop)
+                view.addSubview(tapViewTop)
                 tapViewTop.center.x = commentView.center.x
                 tapViewTop.center.y = commentView.center.y - tapDistancefromView
                 tapViewArray.append(tapViewTop)
@@ -132,7 +132,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
             if canMakeViewBottom {
                 let tapViewBottom = TapView(createX: commentView.x, createY: commentView.y-1, direction: "D")
-                worldView.addSubview(tapViewBottom)
+                view.addSubview(tapViewBottom)
                 tapViewBottom.center.x = commentView.center.x
                 tapViewBottom.center.y = commentView.center.y + tapDistancefromView
                 tapViewArray.append(tapViewBottom)
@@ -150,7 +150,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
             if canMakeViewRight {
                 let tapViewRight = TapView(createX: commentView.x+1, createY: commentView.y, direction: "R")
-                worldView.addSubview(tapViewRight)
+                view.addSubview(tapViewRight)
                 tapViewRight.center.x = commentView.center.x + tapDistancefromView
                 tapViewRight.center.y = commentView.center.y
                 tapViewArray.append(tapViewRight)
@@ -168,7 +168,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
             if canMakeViewLeft {
                 let tapViewLeft = TapView(createX: commentView.x-1, createY: commentView.y, direction: "L")
-                worldView.addSubview(tapViewLeft)
+                view.addSubview(tapViewLeft)
                 tapViewLeft.center.x = commentView.center.x - tapDistancefromView
                 tapViewLeft.center.y = commentView.center.y
                 tapViewArray.append(tapViewLeft)
@@ -183,11 +183,11 @@ class ViewController: UIViewController, UITextViewDelegate {
     func createComment(x: Int, y: Int, direction: String) {
         
         let commentView = CommentView(username: "comment.username", text: "comment.text", x: x, y: y, editMode: true)
-        worldView.addSubview(commentView)
+        view.addSubview(commentView)
         commentViewArray.append(commentView)
         
         //position comment using their x and y relative to worldView center
-        let worldCenter = CGPoint(x: worldView.frame.width/2, y: worldView.frame.height/2)
+        let worldCenter = CGPoint(x: view.frame.width/2, y: view.frame.height/2)
 //        let spacing = commentSpacing*worldScale
         commentView.center.x = worldCenter.x + commentSpacing*CGFloat(commentView.x)
         commentView.center.y = worldCenter.y - commentSpacing*CGFloat(commentView.y)
@@ -203,20 +203,16 @@ class ViewController: UIViewController, UITextViewDelegate {
         let goalPoint = CGPoint(x: view.center.x, y: view.center.y-100)
         print(goalPoint)
         print(commentView.center.x)
-        worldView.frame.origin.x += goalPoint.x - commentView.center.x
-        worldView.frame.origin.y += goalPoint.y - commentView.center.y
-        worldPosition = worldView.frame.origin
+//        view.frame.origin.x += goalPoint.x - commentView.center.x
+//        view.frame.origin.y += goalPoint.y - commentView.center.y
+//        worldPosition = view.frame.origin
 
         UIView.animate(
             withDuration: 5,
             delay: 0,
             options: .curveLinear,
             animations: {
-                
-                let goalPoint = CGPoint(x: self.view.center.x, y: self.view.center.y-100)
-                self.worldView.frame.origin.x += goalPoint.x - commentView.center.x
-                self.worldView.frame.origin.y += goalPoint.y - commentView.center.y
-                self.worldPosition = self.worldView.frame.origin
+             
                 
         },
             completion: {
@@ -281,7 +277,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             shapeLayer.strokeColor = UIColor(white: 0.7, alpha: 1.0).cgColor
             shapeLayer.lineWidth = 10.0
             shapeLayer.zPosition = -1
-            worldView.layer.addSublayer(shapeLayer)
+            view.layer.addSublayer(shapeLayer)
             
         }
     }
@@ -289,11 +285,11 @@ class ViewController: UIViewController, UITextViewDelegate {
     @objc func handlePan(sender: UIPanGestureRecognizer) {
         
         let translation = sender.translation(in: view)
-        worldView.frame.origin.x = worldPosition.x + translation.x
-        worldView.frame.origin.y = worldPosition.y + translation.y
+        view.frame.origin.x = worldPosition.x + translation.x
+        view.frame.origin.y = worldPosition.y + translation.y
         
         if sender.state == .ended {
-            worldPosition = worldView.frame.origin
+            worldPosition = view.frame.origin
         }
     }
     
@@ -302,7 +298,7 @@ class ViewController: UIViewController, UITextViewDelegate {
         let pinchScale = sender.scale
         
         if worldScale*pinchScale > minZoomScale && worldScale*pinchScale < maxZoomScale {
-            worldView.transform = view.transform.scaledBy(x: worldScale*pinchScale, y: worldScale*pinchScale)
+            view.transform = view.transform.scaledBy(x: worldScale*pinchScale, y: worldScale*pinchScale)
             
             if sender.state == .ended {
                 worldScale = worldScale*pinchScale
