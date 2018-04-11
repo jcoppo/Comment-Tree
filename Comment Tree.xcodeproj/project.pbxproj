@@ -15,6 +15,10 @@
 		BC587D1A207A9B01004B0BAC /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BC587D18207A9B01004B0BAC /* LaunchScreen.storyboard */; };
 		BC587D25207A9B01004B0BAC /* Comment_TreeTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC587D24207A9B01004B0BAC /* Comment_TreeTests.swift */; };
 		BC587D30207A9B01004B0BAC /* Comment_TreeUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC587D2F207A9B01004B0BAC /* Comment_TreeUITests.swift */; };
+		BC587D3E207A9C11004B0BAC /* CommentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC587D3D207A9C11004B0BAC /* CommentView.swift */; };
+		BC587D40207A9C67004B0BAC /* Public Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC587D3F207A9C67004B0BAC /* Public Functions.swift */; };
+		BC587D42207AA80B004B0BAC /* TapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC587D41207AA80B004B0BAC /* TapView.swift */; };
+		BCEAC91D207D530C00D76CFB /* CommentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEAC91C207D530C00D76CFB /* CommentData.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -49,6 +53,10 @@
 		BC587D2B207A9B01004B0BAC /* Comment TreeUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "Comment TreeUITests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
 		BC587D2F207A9B01004B0BAC /* Comment_TreeUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Comment_TreeUITests.swift; sourceTree = "<group>"; };
 		BC587D31207A9B01004B0BAC /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BC587D3D207A9C11004B0BAC /* CommentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentView.swift; sourceTree = "<group>"; };
+		BC587D3F207A9C67004B0BAC /* Public Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Public Functions.swift"; sourceTree = "<group>"; };
+		BC587D41207AA80B004B0BAC /* TapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapView.swift; sourceTree = "<group>"; };
+		BCEAC91C207D530C00D76CFB /* CommentData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentData.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -101,6 +109,10 @@
 			children = (
 				BC587D0C207A9AFF004B0BAC /* AppDelegate.swift */,
 				BC587D0E207A9AFF004B0BAC /* ViewController.swift */,
+				BC587D3D207A9C11004B0BAC /* CommentView.swift */,
+				BCEAC91C207D530C00D76CFB /* CommentData.swift */,
+				BC587D41207AA80B004B0BAC /* TapView.swift */,
+				BC587D3F207A9C67004B0BAC /* Public Functions.swift */,
 				BC587D10207A9AFF004B0BAC /* Main.storyboard */,
 				BC587D16207A9B01004B0BAC /* Assets.xcassets */,
 				BC587D18207A9B01004B0BAC /* LaunchScreen.storyboard */,
@@ -261,7 +273,11 @@
 			files = (
 				BC587D0F207A9AFF004B0BAC /* ViewController.swift in Sources */,
 				BC587D0D207A9AFF004B0BAC /* AppDelegate.swift in Sources */,
+				BCEAC91D207D530C00D76CFB /* CommentData.swift in Sources */,
+				BC587D42207AA80B004B0BAC /* TapView.swift in Sources */,
 				BC587D15207A9AFF004B0BAC /* Comment_Tree.xcdatamodeld in Sources */,
+				BC587D3E207A9C11004B0BAC /* CommentView.swift in Sources */,
+				BC587D40207A9C67004B0BAC /* Public Functions.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
