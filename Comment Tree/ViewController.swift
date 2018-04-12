@@ -8,10 +8,10 @@
 
 import UIKit
 
-class ViewController: UIViewController, UITextViewDelegate {
+class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
     
-//    var worldView = UIView() //parent view
-    let worldSize: CGFloat = 20 //number of comments allowed across world
+    var scrollView = UIScrollView() //parent view
+    let worldSize: CGFloat = 5 //number of comments allowed across world
     var worldPosition = CGPoint() //for panning
     var worldScale: CGFloat = 1 // for zooming
     var minZoomScale: CGFloat = 0.15
@@ -21,27 +21,31 @@ class ViewController: UIViewController, UITextViewDelegate {
     var commentArray = [CommentData]()
     var commentViewArray = [CommentView]()
     var currentCommentEdited: CommentView?
+    var currentConnectingRod = CAShapeLayer()
     var editMode = false
+    var cancelButton = CancelButton()
+    var emptyCommentMessage = UILabel()
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
-//        view.frame.origin.x += 100
         //the parent view the holds everything, it can pan and zoom
-//        worldView = UIView(frame: CGRect(x: 0, y: 0, width: worldSize*commentSpacing, height: worldSize*commentSpacing))
-//        worldView.backgroundColor = UIColor.clear
-//        worldView.layer.borderColor = UIColor(white: 0.4, alpha: 1).cgColor
-//        worldView.layer.borderWidth = 4
-//        view.addSubview(worldView)
-        
-//        worldView.center = view.center
-//        worldPosition = worldView.frame.origin
+//        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: worldSize*commentSpacing, height: worldSize*commentSpacing))
+        scrollView = UIScrollView(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: view.frame.height))
+        scrollView.contentSize = CGSize(width: 1000, height: 1000)
+//        scrollView.backgroundColor = UIColor.clear
+//        scrollView.layer.borderColor = UIColor(white: 0.4, alpha: 1).cgColor
+//        scrollView.layer.borderWidth = 4
+        scrollView.delegate = self
+        scrollView.contentOffset.x = scrollView.contentSize.width/2 - view.frame.width/2
+        scrollView.contentOffset.y = scrollView.contentSize.height/2 - view.frame.height/2
+        view.addSubview(scrollView)
         
         //root of tree
 //        createComment(x: 0, y: 0, direction: "none")
         
-        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
-        view.addGestureRecognizer(panGesture)
+//        let panGesture = UIPanGestureRecognizer(target: self, action: #selector(handlePan(sender:)))
+//        view.addGestureRecognizer(panGesture)
         
 //        let pinchGesture = UIPinchGestureRecognizer(target: self, action: #selector(handlePinch(sender:)))
 //        view.addGestureRecognizer(pinchGesture)
@@ -51,6 +55,22 @@ class ViewController: UIViewController, UITextViewDelegate {
         let exampleTree = ExampleTree()
         renderCommentTreefromData(comments: exampleTree.commentArray)
         
+        cancelButton = CancelButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
+        let tapGestureCancel = UITapGestureRecognizer(target: self, action: #selector(handleTapCancel(sender:)))
+        cancelButton.addGestureRecognizer(tapGestureCancel)
+        //add button later in createComment()
+        
+        //taping the view
+        let tapGestureView = UITapGestureRecognizer(target: self, action: #selector(handleTapView(sender:)))
+        view.addGestureRecognizer(tapGestureView)
+        
+        emptyCommentMessage = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 60))
+        emptyCommentMessage.font = UIFont(name: "", size: 10)
+        emptyCommentMessage.textAlignment = .center
+        emptyCommentMessage.numberOfLines = 0
+        emptyCommentMessage.text = "Oh no, your comment is empty!"
+        //added to view when pressing the done key in textView(...)
+        
     }
     
     func renderCommentTreefromData(comments: [CommentData]) {
@@ -58,17 +78,17 @@ class ViewController: UIViewController, UITextViewDelegate {
         commentArray = comments
         
         //position comment using their x and y relative to vew.center
-//        let worldCenter = CGPoint(x: worldView.frame.width/2, y: worldView.frame.height/2)
-//        let spacing = commentSpacing*worldScale
+//        let worldCenter = CGPoint(x: scrollView.frame.width/2, y: scrollView.frame.height/2)
+        let scrollviewCenter = CGPoint(x: scrollView.contentSize.width/2, y: scrollView.contentSize.height/2)
         
         for comment in comments {
             
             //put comment it its place using its x and y
             let commentView = CommentView(username: comment.username, text: comment.text, x: comment.x, y: comment.y, editMode: false)
             commentViewArray.append(commentView)
-            commentView.center.x = view.center.x + commentSpacing*CGFloat(comment.x)
-            commentView.center.y = view.center.y - commentSpacing*CGFloat(comment.y)
-            view.addSubview(commentView)
+            commentView.center.x = scrollviewCenter.x + commentSpacing*CGFloat(comment.x)
+            commentView.center.y = scrollviewCenter.y - commentSpacing*CGFloat(comment.y)
+            scrollView.addSubview(commentView)
             
             //draw line from center of comment to center to its respond comment
             let linePath = UIBezierPath()
@@ -82,7 +102,7 @@ class ViewController: UIViewController, UITextViewDelegate {
             shapeLayer.strokeColor = UIColor(white: 0.7, alpha: 1.0).cgColor
             shapeLayer.lineWidth = 10.0
             shapeLayer.zPosition = -1
-            view.layer.addSublayer(shapeLayer)
+            scrollView.layer.addSublayer(shapeLayer)
             
             //make tapViews (bubbles)
         }
@@ -106,15 +126,15 @@ class ViewController: UIViewController, UITextViewDelegate {
             let tapDistancefromView: CGFloat = 100
             
             //top
-            var canMakeViewTop = true
+            var topAvailable = true
             for commentChecked in commentViewArray {
                 if commentChecked.x == commentView.x && commentChecked.y == commentView.y+1 {
-                    canMakeViewTop = false
+                    topAvailable = false
                 }
             }
-            if canMakeViewTop {
+            if topAvailable {
                 let tapViewTop = TapView(createX: commentView.x, createY: commentView.y+1, direction: "U")
-                view.addSubview(tapViewTop)
+                scrollView.addSubview(tapViewTop)
                 tapViewTop.center.x = commentView.center.x
                 tapViewTop.center.y = commentView.center.y - tapDistancefromView
                 tapViewArray.append(tapViewTop)
@@ -124,15 +144,15 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
             
             //bottom
-            var canMakeViewBottom = true
+            var bottomAvailable = true
             for commentChecked in commentViewArray {
                 if commentChecked.x == commentView.x && commentChecked.y == commentView.y-1 {
-                    canMakeViewBottom = false
+                    bottomAvailable = false
                 }
             }
-            if canMakeViewBottom {
+            if bottomAvailable {
                 let tapViewBottom = TapView(createX: commentView.x, createY: commentView.y-1, direction: "D")
-                view.addSubview(tapViewBottom)
+                scrollView.addSubview(tapViewBottom)
                 tapViewBottom.center.x = commentView.center.x
                 tapViewBottom.center.y = commentView.center.y + tapDistancefromView
                 tapViewArray.append(tapViewBottom)
@@ -142,15 +162,15 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
             
             //right
-            var canMakeViewRight = true
+            var rightAvailable = true
             for commentChecked in commentViewArray {
                 if commentChecked.x == commentView.x+1 && commentChecked.y == commentView.y {
-                    canMakeViewRight = false
+                    rightAvailable = false
                 }
             }
-            if canMakeViewRight {
+            if rightAvailable {
                 let tapViewRight = TapView(createX: commentView.x+1, createY: commentView.y, direction: "R")
-                view.addSubview(tapViewRight)
+                scrollView.addSubview(tapViewRight)
                 tapViewRight.center.x = commentView.center.x + tapDistancefromView
                 tapViewRight.center.y = commentView.center.y
                 tapViewArray.append(tapViewRight)
@@ -160,15 +180,15 @@ class ViewController: UIViewController, UITextViewDelegate {
             }
             
             //left
-            var canMakeViewLeft = true
+            var leftAvailable = true
             for commentChecked in commentViewArray {
                 if commentChecked.x == commentView.x-1 && commentChecked.y == commentView.y {
-                    canMakeViewLeft = false
+                    leftAvailable = false
                 }
             }
-            if canMakeViewLeft {
+            if leftAvailable {
                 let tapViewLeft = TapView(createX: commentView.x-1, createY: commentView.y, direction: "L")
-                view.addSubview(tapViewLeft)
+                scrollView.addSubview(tapViewLeft)
                 tapViewLeft.center.x = commentView.center.x - tapDistancefromView
                 tapViewLeft.center.y = commentView.center.y
                 tapViewArray.append(tapViewLeft)
@@ -180,17 +200,16 @@ class ViewController: UIViewController, UITextViewDelegate {
         }
     }
     
-    func createComment(x: Int, y: Int, direction: String) {
+    func createComment(x: Int, y: Int) {
         
-        let commentView = CommentView(username: "comment.username", text: "comment.text", x: x, y: y, editMode: true)
-        view.addSubview(commentView)
+        let commentView = CommentView(username: "", text: "", x: x, y: y, editMode: true)
+        scrollView.addSubview(commentView)
         commentViewArray.append(commentView)
         
         //position comment using their x and y relative to worldView center
-        let worldCenter = CGPoint(x: view.frame.width/2, y: view.frame.height/2)
-//        let spacing = commentSpacing*worldScale
-        commentView.center.x = worldCenter.x + commentSpacing*CGFloat(commentView.x)
-        commentView.center.y = worldCenter.y - commentSpacing*CGFloat(commentView.y)
+        let scrollviewCenter = CGPoint(x: scrollView.contentSize.width/2, y: scrollView.contentSize.height/2)
+        commentView.center.x = scrollviewCenter.x + commentSpacing*CGFloat(commentView.x)
+        commentView.center.y = scrollviewCenter.y - commentSpacing*CGFloat(commentView.y)
         
         updateTapViews()
         
@@ -199,41 +218,66 @@ class ViewController: UIViewController, UITextViewDelegate {
         
         currentCommentEdited = commentView
         
+        //show cancel button
+        view.addSubview(cancelButton)
+        
         //move world so that new comment is in center
         let goalPoint = CGPoint(x: view.center.x, y: view.center.y-100)
-        print(goalPoint)
-        print(commentView.center.x)
-//        view.frame.origin.x += goalPoint.x - commentView.center.x
-//        view.frame.origin.y += goalPoint.y - commentView.center.y
-//        worldPosition = view.frame.origin
-
+        
         UIView.animate(
-            withDuration: 5,
+            withDuration: 0.5,
             delay: 0,
-            options: .curveLinear,
+            options: .curveEaseOut,
             animations: {
-             
                 
+                self.scrollView.contentOffset.x = commentView.center.x - goalPoint.x
+                self.scrollView.contentOffset.y = commentView.center.y - goalPoint.y
         },
             completion: {
                 _ in
         })
-
-        
-
     }
     
-    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool
-    {
+    func cancelPost() {
+        currentCommentEdited?.textField.resignFirstResponder()
+        editMode = false
+        cancelButton.removeFromSuperview()
+        currentCommentEdited?.removeFromSuperview()
+        currentConnectingRod.removeFromSuperlayer()
+        commentViewArray.removeLast()
+        updateTapViews()
+    }
+    
+    var emptyMessageShown = false
+    
+    //Keyboard events
+    func textView(_ textView: UITextView, shouldChangeTextIn range: NSRange, replacementText text: String) -> Bool {
+        
+        if(text != "\n") {
+            print("letters")
+            if emptyMessageShown {
+                emptyCommentMessage.removeFromSuperview()
+            }
+            
+        }
+        
         //pressing Return
         if(text == "\n") {
-            textView.resignFirstResponder()
-            currentCommentEdited?.submitPost()
-            editMode = false
+            //if text field is empty, dont post and show warning message instead
+            if textView.text.count > 0 {
+                textView.resignFirstResponder()
+                currentCommentEdited?.submitPost()
+                editMode = false
+                cancelButton.removeFromSuperview()
+                updateTapViews()
+            } else {
+                print("nope")
+                view.addSubview(emptyCommentMessage)
+                emptyMessageShown = true
+            }
+        
             return false
-        }
-        else
-        {
+        } else {
             return true
         }
     }
@@ -248,9 +292,8 @@ class ViewController: UIViewController, UITextViewDelegate {
             tapView.removeFromSuperview()
             
             print("haha \(tapView.createX, tapView.createY)")
-            print("lol \(tapView.direction)")
             
-            createComment(x: tapView.createX, y: tapView.createY, direction: tapView.direction)
+            createComment(x: tapView.createX, y: tapView.createY)
             
             //make connecting rod as a line drawing through the center of the where tapView was
             let linePath = UIBezierPath()
@@ -277,28 +320,42 @@ class ViewController: UIViewController, UITextViewDelegate {
             shapeLayer.strokeColor = UIColor(white: 0.7, alpha: 1.0).cgColor
             shapeLayer.lineWidth = 10.0
             shapeLayer.zPosition = -1
-            view.layer.addSublayer(shapeLayer)
+            scrollView.layer.addSublayer(shapeLayer)
+            currentConnectingRod = shapeLayer
             
+        }
+    }
+
+    @objc func handleTapCancel(sender: UITapGestureRecognizer) {
+        print("cancel")
+        cancelPost()
+    }
+    
+    @objc func handleTapView(sender: UITapGestureRecognizer) {
+        print("eeeee")
+        if editMode {
+            cancelPost()
         }
     }
     
     @objc func handlePan(sender: UIPanGestureRecognizer) {
         
         let translation = sender.translation(in: view)
-        view.frame.origin.x = worldPosition.x + translation.x
-        view.frame.origin.y = worldPosition.y + translation.y
+        scrollView.frame.origin.x = worldPosition.x + translation.x
+        scrollView.frame.origin.y = worldPosition.y + translation.y
         
         if sender.state == .ended {
-            worldPosition = view.frame.origin
+            worldPosition = scrollView.frame.origin
         }
     }
+
     
     @objc func handlePinch(sender: UIPinchGestureRecognizer) {
         
         let pinchScale = sender.scale
         
         if worldScale*pinchScale > minZoomScale && worldScale*pinchScale < maxZoomScale {
-            view.transform = view.transform.scaledBy(x: worldScale*pinchScale, y: worldScale*pinchScale)
+            scrollView.transform = view.transform.scaledBy(x: worldScale*pinchScale, y: worldScale*pinchScale)
             
             if sender.state == .ended {
                 worldScale = worldScale*pinchScale

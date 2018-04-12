@@ -19,6 +19,7 @@
 		BC587D40207A9C67004B0BAC /* Public Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC587D3F207A9C67004B0BAC /* Public Functions.swift */; };
 		BC587D42207AA80B004B0BAC /* TapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC587D41207AA80B004B0BAC /* TapView.swift */; };
 		BCEAC91D207D530C00D76CFB /* CommentData.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEAC91C207D530C00D76CFB /* CommentData.swift */; };
+		BCEAC91F207DD2BD00D76CFB /* CancelButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCEAC91E207DD2BD00D76CFB /* CancelButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -57,6 +58,7 @@
 		BC587D3F207A9C67004B0BAC /* Public Functions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Public Functions.swift"; sourceTree = "<group>"; };
 		BC587D41207AA80B004B0BAC /* TapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapView.swift; sourceTree = "<group>"; };
 		BCEAC91C207D530C00D76CFB /* CommentData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CommentData.swift; sourceTree = "<group>"; };
+		BCEAC91E207DD2BD00D76CFB /* CancelButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancelButton.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +114,7 @@
 				BC587D3D207A9C11004B0BAC /* CommentView.swift */,
 				BCEAC91C207D530C00D76CFB /* CommentData.swift */,
 				BC587D41207AA80B004B0BAC /* TapView.swift */,
+				BCEAC91E207DD2BD00D76CFB /* CancelButton.swift */,
 				BC587D3F207A9C67004B0BAC /* Public Functions.swift */,
 				BC587D10207A9AFF004B0BAC /* Main.storyboard */,
 				BC587D16207A9B01004B0BAC /* Assets.xcassets */,
@@ -278,6 +281,7 @@
 				BC587D15207A9AFF004B0BAC /* Comment_Tree.xcdatamodeld in Sources */,
 				BC587D3E207A9C11004B0BAC /* CommentView.swift in Sources */,
 				BC587D40207A9C67004B0BAC /* Public Functions.swift in Sources */,
+				BCEAC91F207DD2BD00D76CFB /* CancelButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
