@@ -8,18 +8,22 @@
 
 import UIKit
 
-class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
+class TreeViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
     
     var scrollView = UIScrollView() //parent view
     var parentView = UIView()
     let commentSpacing: CGFloat = 180 //from the center pf each comment
+    var newTree = false
+    var commentData = [CommentData]()
     var tapViewArray = [TapView]()
     var commentViewArray = [CommentView]()
     var currentCommentEdited: CommentView?
     var currentConnectingRod = CAShapeLayer()
     var editMode = false
-    var cancelButton = CancelButton()
     var emptyCommentMessage = UILabel()
+    
+    @IBOutlet weak var backButton: UIButton!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,13 +51,12 @@ class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         parentView.center.y = scrollView.contentSize.height/2
         
         //example
-        let exampleTree = ExampleTree()
-        renderCommentTreefromData(comments: exampleTree.commentArray)
-        
-        cancelButton = CancelButton(frame: CGRect(x: 0, y: 0, width: 50, height: 50))
-        let tapGestureCancel = UITapGestureRecognizer(target: self, action: #selector(handleTapCancel(sender:)))
-        cancelButton.addGestureRecognizer(tapGestureCancel)
-        //add button later in createComment()
+//        let exampleTree = ExampleTree()
+        if newTree {
+            createComment(x: 0, y: 0)
+        } else {
+            renderCommentTreefromData(comments: commentData)
+        }
         
         //taping the view
         let tapGestureView = UITapGestureRecognizer(target: self, action: #selector(handleTapView(sender:)))
@@ -65,6 +68,9 @@ class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         emptyCommentMessage.numberOfLines = 0
         emptyCommentMessage.text = "Oh no, your comment is empty!"
         //added to view when pressing the done key in textView(...)
+        
+        backButton.removeFromSuperview()
+        view.addSubview(backButton)
         
     }
     
@@ -213,7 +219,7 @@ class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         currentCommentEdited = commentView
         
         //show cancel button
-        view.addSubview(cancelButton)
+//        view.addSubview(cancelButton)
         
         //move world so that new comment is in center
         let goalPoint = CGPoint(x: view.center.x, y: view.center.y-100)
@@ -236,7 +242,6 @@ class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate
         print("cancel")
         currentCommentEdited?.textField.resignFirstResponder()
         editMode = false
-        cancelButton.removeFromSuperview()
         currentCommentEdited?.removeFromSuperview()
         currentConnectingRod.removeFromSuperlayer()
         commentViewArray.removeLast()
@@ -267,7 +272,6 @@ class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate
                 textView.resignFirstResponder()
                 currentCommentEdited?.submitPost()
                 editMode = false
-                cancelButton.removeFromSuperview()
                 updateTapViews()
             } else {
                 print("not yet son")
@@ -340,6 +344,15 @@ class ViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return parentView
     }
+    
+    @IBAction func backButtonPressed(_ sender: Any) {
+        
+        print("back to nav")
+        performSegue(withIdentifier: "backToNav", sender: self)
+
+    
+    }
+    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
