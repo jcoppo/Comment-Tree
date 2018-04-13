@@ -43,7 +43,6 @@ struct TreeList {
     var treeArray = [Tree]()
     
     init() {
-        
         makeTree1()
         makeTree2()
     }
@@ -58,7 +57,7 @@ struct TreeList {
         
         let post4 = CommentData(username: "Elaine", text: "Oh he's definitely 'sponge-worthy'", x: -1, y: 0, xRespond: 0, yRespond: 0)
         
-        var tree1 = Tree(name: "What's The Deal")
+        var tree1 = Tree(name: "What's The Deal with peanuts?")
         tree1.commentArray = [post1, post2, post3, post4]
         
         treeArray.append(tree1)
@@ -83,7 +82,7 @@ struct TreeList {
         
         let post8 = CommentData(username: "Frank", text: "This guy...he's not my kinda guy", x: 1, y: -1, xRespond: 0, yRespond: -1)
         
-        var tree2 = Tree(name: "Excruciating Minutiae")
+        var tree2 = Tree(name: "Let's complain about our students")
         tree2.commentArray = [post1, post2, post3, post4, post5, post6, post7, post8]
         
         treeArray.append(tree2)
