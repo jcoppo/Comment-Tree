@@ -58,8 +58,9 @@ class TreeViewController: UIViewController, UIScrollViewDelegate, UITextViewDele
             renderCommentTreefromData(comments: commentData)
         }
         
-        //taping the view
+        //tapping the view
         let tapGestureView = UITapGestureRecognizer(target: self, action: #selector(handleTapView(sender:)))
+        tapGestureView.numberOfTapsRequired = 2
         view.addGestureRecognizer(tapGestureView)
         
         emptyCommentMessage = UILabel(frame: CGRect(x: 0, y: 0, width: view.frame.width, height: 60))
@@ -130,6 +131,8 @@ class TreeViewController: UIViewController, UIScrollViewDelegate, UITextViewDele
                     topAvailable = false
                 }
             }
+            
+            // Disable scrolling while editing!!!!
             if topAvailable {
                 let tapViewTop = TapView(createX: commentView.x, createY: commentView.y+1, direction: "U")
                 parentView.addSubview(tapViewTop)
@@ -138,6 +141,8 @@ class TreeViewController: UIViewController, UIScrollViewDelegate, UITextViewDele
                 tapViewArray.append(tapViewTop)
                 
                 let tapGestureTop = UITapGestureRecognizer(target: self, action: #selector(handleTap(sender:)))
+                
+               
                 tapViewTop.addGestureRecognizer(tapGestureTop)
             }
             
@@ -327,10 +332,6 @@ class TreeViewController: UIViewController, UIScrollViewDelegate, UITextViewDele
             currentConnectingRod = shapeLayer
             
         }
-    }
-
-    @objc func handleTapCancel(sender: UITapGestureRecognizer) {
-        cancelPost()
     }
     
     @objc func handleTapView(sender: UITapGestureRecognizer) {
